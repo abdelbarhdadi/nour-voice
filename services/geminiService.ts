@@ -86,7 +86,7 @@ function audioBufferToWav(buffer: AudioBuffer): Blob {
 }
 
 export class NourVoiceService {
-  private ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
+  private ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY as string });
 
   async preprocessText(text: string, options: { dialect: string, field: string, personality: string, controls: any }): Promise<string> {
     const prompt = `
