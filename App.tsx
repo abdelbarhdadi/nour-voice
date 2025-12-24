@@ -113,7 +113,7 @@ const ControlGroup: React.FC<{
 }> = ({ id, title, options, current, onChange }) => (
   <div className="space-y-6 text-right group">
     <label className="text-base font-bold text-gray-500 uppercase tracking-widest group-hover:text-[#9333ea] transition-colors">{title}</label>
-    <div className="grid grid-cols-1 gap-4">
+    <div className="grid grid-cols-1 gap-4 w-full px-2">
       {options.map(opt => (
         <button
           key={opt.label}

@@ -2,7 +2,7 @@ import React from 'react';
 
 export const VoiceCard = ({ title, description, isSelected, icon }: any) => {
   return (
-    <div className={`p-6 rounded-3xl border-2 transition-all cursor-pointer mb-4 
+    <div className={w-full p-6 rounded-3xl border-2 transition-all cursor-pointer mb-4 
       ${isSelected 
         ? 'border-purple-500 bg-purple-50 shadow-lg' 
         : 'border-gray-100 bg-white shadow-sm'}`}>
