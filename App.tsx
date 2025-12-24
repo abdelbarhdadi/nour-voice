@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import { DIALECTS, VOICE_TYPES, VOICE_FIELDS, STUDIO_CONTROLS, CATEGORY_STYLES, getBaseVoiceForType, DialectInfo, VoiceProfile, VoiceField } from './constants';
 import { GenerationHistory, VoiceControls } from './types';
@@ -31,7 +30,7 @@ const CinematicIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) =>
   }, [onComplete]);
 
   return (
-    <div className={`fixed inset-0 z-[100] bg-white overflow-hidden flex items-center justify-center transition-opacity duration-1000 ${stage === 'fadeout' ? 'opacity-0 blur-2xl' : 'opacity-100'}`}>
+    <div className={`fixed inset-0 z-[100] bg-white overflow-y-auto flex items-center justify-center transition-opacity duration-1000 ${stage === 'fadeout' ? 'opacity-0 pointer-events-none blur-2xl' : 'opacity-100'}`}>
       <div className="absolute inset-0 perspective-[1000px]">
         {particles.map(p => (
           <div 
@@ -271,234 +270,235 @@ Controls: Temp(${voiceControls.temp}), Speed(${voiceControls.speed}), Drama(${vo
     setShowIntro(false);
   };
 
-  if (showIntro) return <CinematicIntro onComplete={finishIntro} />;
-
   return (
-    <div className="min-h-screen bg-white text-gray-900 flex flex-col items-center py-12 md:py-32 px-4 md:px-10 font-arabic overflow-x-hidden relative animate-in fade-in duration-1000" dir="ltr">
+    <>
+      {showIntro && <CinematicIntro onComplete={finishIntro} />}
       
-      <div className="bg-light-blob top-[10%] left-[5%]"></div>
-      <div className="bg-light-blob bottom-[10%] right-[5%] opacity-40"></div>
-      
-      <FloatingMic />
-      <FloatingHeadphones />
-
-      <header className="mb-16 md:mb-32 text-center relative z-10 group px-2">
-        <div className="flex flex-col items-center gap-6 md:gap-10 mb-6 md:mb-10">
-          <div className="h-24 w-24 md:h-40 md:w-40 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
-            <img src="https://i.postimg.cc/h4YZvfBr/unnamed-8.jpg" alt="NOUR VOICE Logo" className="w-full h-full object-contain drop-shadow-xl rounded-full" />
-          </div>
-          <div className="text-center">
-            <h1 className="text-4xl md:text-9xl font-black purple-text tracking-tighter leading-tight mb-2 md:mb-6">NOUR VOICE</h1>
-            <p className="text-gray-600 text-sm md:text-2xl uppercase tracking-[0.2em] md:tracking-[0.5em] font-black">PROFESSIONAL VOICE ENGINE</p>
-          </div>
-        </div>
-      </header>
-
-      <div className="w-full max-w-7xl space-y-16 md:space-y-32 relative z-10">
+      <div className="min-h-screen bg-white text-gray-900 flex flex-col items-center py-12 md:py-32 px-4 md:px-10 font-arabic relative animate-in fade-in duration-1000" dir="ltr">
         
-        {/* Step 1: Text Content */}
-        <section className="glass-3d p-6 md:p-24 rounded-3xl md:rounded-[60px] space-y-8 md:space-y-16">
-          <h3 className="text-lg md:text-3xl font-black text-gray-800 uppercase tracking-widest text-center">1. Script Engineering / هندسة المخطوطة</h3>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
-            <div className="space-y-4 md:space-y-8">
-              <label className="text-sm md:text-lg font-black text-gray-600 uppercase tracking-widest block pl-2">Input Draft / مسودة النص</label>
-              <textarea
-                className="w-full h-[250px] md:h-[500px] bg-gray-50/50 border-2 border-gray-200 rounded-3xl md:rounded-[50px] p-6 md:p-12 text-lg md:text-4xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#9333ea]/30 transition-all leading-relaxed resize-none shadow-sm"
-                placeholder="Tapez votre texte ici..."
-                value={inputText}
-                onChange={(e) => setInputText(e.target.value)}
-              />
-              <button
-                onClick={handlePreprocess}
-                disabled={isPreprocessing || !inputText.trim()}
-                className="w-full py-6 md:py-10 rounded-2xl md:rounded-[35px] border-2 border-[#9333ea]/20 bg-[#9333ea]/5 text-[#9333ea] text-lg md:text-2xl font-black hover:bg-[#9333ea] hover:text-white transition-all disabled:opacity-20 flex items-center justify-center gap-4 md:gap-8 group shadow-lg"
-              >
-                {isPreprocessing ? <div className="w-5 h-5 md:w-8 md:h-8 border-4 border-[#9333ea]/20 border-t-[#9333ea] rounded-full animate-spin"></div> : null}
-                <span className="tracking-widest">AI REFINEMENT / تحسين ذكي</span>
-              </button>
+        <div className="bg-light-blob top-[10%] left-[5%]"></div>
+        <div className="bg-light-blob bottom-[10%] right-[5%] opacity-40"></div>
+        
+        <FloatingMic />
+        <FloatingHeadphones />
+
+        <header className="mb-16 md:mb-32 text-center relative z-10 group px-2">
+          <div className="flex flex-col items-center gap-6 md:gap-10 mb-6 md:mb-10">
+            <div className="h-24 w-24 md:h-40 md:w-40 flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
+              <img src="https://i.postimg.cc/h4YZvfBr/unnamed-8.jpg" alt="NOUR VOICE Logo" className="w-full h-full object-contain drop-shadow-xl rounded-full" />
             </div>
-            <div className="space-y-4 md:space-y-8">
-              <label className="text-sm md:text-lg font-black text-[#9333ea] uppercase tracking-widest block pl-2">Master Script / المخطوطة النهائية</label>
-              <textarea
-                className="w-full h-[250px] md:h-[500px] bg-purple-50/20 border-2 border-purple-100 rounded-3xl md:rounded-[50px] p-6 md:p-12 text-lg md:text-4xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#9333ea]/40 transition-all leading-relaxed resize-none shadow-sm"
-                placeholder="Resultat optimisé..."
-                value={processedText}
-                onChange={(e) => setProcessedText(e.target.value)}
-              />
+            <div className="text-center">
+              <h1 className="text-4xl md:text-9xl font-black purple-text tracking-tighter leading-tight mb-2 md:mb-6">NOUR VOICE</h1>
+              <p className="text-gray-600 text-sm md:text-2xl uppercase tracking-[0.2em] md:tracking-[0.5em] font-black">PROFESSIONAL VOICE ENGINE</p>
             </div>
           </div>
-        </section>
+        </header>
 
-        {/* Step 2: Language */}
-        <section className="glass-3d p-6 md:p-24 rounded-3xl md:rounded-[60px]">
-          <h3 className="text-lg md:text-3xl font-black text-gray-800 uppercase tracking-widest text-center mb-10 md:mb-20">2. Language & Accents / اللغة واللهجات</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12">
-            {DIALECTS.map((dialect) => (
-              <button
-                key={dialect.id}
-                onClick={() => setSelectedDialectId(dialect.id)}
-                className={`relative p-6 md:p-12 rounded-[30px] md:rounded-[50px] transition-all duration-500 border-2 group ${
-                  selectedDialectId === dialect.id 
-                    ? 'border-[#9333ea]/50 bg-[#9333ea]/5 shadow-xl md:scale-[1.03]' 
-                    : 'border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300'
-                }`}
-              >
-                <div className="flex flex-col md:flex-row items-center md:items-start justify-between mb-4 md:mb-8 text-center md:text-left">
-                  <h4 className={`text-xl md:text-5xl font-black leading-tight ${selectedDialectId === dialect.id ? 'text-[#9333ea]' : 'text-gray-800'}`}>
-                    {dialect.title}
-                  </h4>
-                  <div className={`h-10 w-10 md:h-14 md:w-14 rounded-full flex items-center justify-center transition-all mt-4 md:mt-0 ${selectedDialectId === dialect.id ? 'purple-bg text-white' : 'bg-gray-300 text-gray-500'}`}>
-                    <svg className="w-5 h-5 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
-                  </div>
-                </div>
-                <p className={`text-sm md:text-lg leading-relaxed font-bold text-center md:text-right ${selectedDialectId === dialect.id ? 'text-gray-700' : 'text-gray-500'}`}>
-                  {dialect.description}
-                </p>
-              </button>
-            ))}
-          </div>
-        </section>
-
-        {/* Step 3: Personality */}
-        <section className="glass-3d p-6 md:p-24 rounded-3xl md:rounded-[60px] space-y-12 md:space-y-24">
-          <div className="flex flex-col items-center gap-6 md:gap-12">
-            <h3 className="text-lg md:text-3xl font-black text-gray-800 uppercase tracking-widest text-center">Voice Archetypes / البصمة الصوتية</h3>
-            <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
-              {['ذكر', 'أنثى'].map(gender => (
+        <div className="w-full max-w-7xl space-y-16 md:space-y-32 relative z-10">
+          
+          {/* Step 1: Text Content */}
+          <section className="glass-3d p-6 md:p-24 rounded-3xl md:rounded-[60px] space-y-8 md:space-y-16">
+            <h3 className="text-lg md:text-3xl font-black text-gray-800 uppercase tracking-widest text-center">1. Script Engineering / هندسة المخطوطة</h3>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-16">
+              <div className="space-y-4 md:space-y-8">
+                <label className="text-sm md:text-lg font-black text-gray-600 uppercase tracking-widest block pl-2">Input Draft / مسودة النص</label>
+                <textarea
+                  className="w-full h-[250px] md:h-[500px] bg-gray-50/50 border-2 border-gray-200 rounded-3xl md:rounded-[50px] p-6 md:p-12 text-lg md:text-4xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#9333ea]/30 transition-all leading-relaxed resize-none shadow-sm"
+                  placeholder="Tapez votre texte ici..."
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
+                />
                 <button
-                  key={gender}
-                  onClick={() => setSelectedGender(gender)}
-                  className={`px-8 md:px-24 py-4 md:py-8 rounded-full border-2 transition-all duration-500 text-lg md:text-3xl font-black shadow-lg ${
-                    selectedGender === gender 
-                      ? 'border-[#9333ea] bg-[#9333ea]/5 text-[#9333ea] md:scale-105' 
-                      : 'border-gray-200 bg-gray-50 text-gray-500 hover:bg-gray-100'
-                  }`}
+                  onClick={handlePreprocess}
+                  disabled={isPreprocessing || !inputText.trim()}
+                  className="w-full py-6 md:py-10 rounded-2xl md:rounded-[35px] border-2 border-[#9333ea]/20 bg-[#9333ea]/5 text-[#9333ea] text-lg md:text-2xl font-black hover:bg-[#9333ea] hover:text-white transition-all disabled:opacity-20 flex items-center justify-center gap-4 md:gap-8 group shadow-lg"
                 >
-                  {gender === 'ذكر' ? 'Homme / Male' : 'Femme / Female'}
+                  {isPreprocessing ? <div className="w-5 h-5 md:w-8 md:h-8 border-4 border-[#9333ea]/20 border-t-[#9333ea] rounded-full animate-spin"></div> : null}
+                  <span className="tracking-widest">AI REFINEMENT / تحسين ذكي</span>
                 </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="pt-12 md:pt-24 border-t border-gray-200">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12">
-              {filteredProfiles.map((profile, idx) => {
-                const style = CATEGORY_STYLES[profile.categoryKey as keyof typeof CATEGORY_STYLES];
-                const isActive = selectedVoiceName === profile.name;
-                return (
-                  <button
-                    key={idx}
-                    onClick={() => setSelectedVoiceName(profile.name)}
-                    className={`relative overflow-hidden p-6 md:p-12 rounded-[30px] md:rounded-[60px] border-2 transition-all duration-700 h-full flex flex-col items-center justify-center gap-4 md:gap-10 text-center ${
-                      isActive 
-                        ? `border-[#9333ea]/40 bg-white ring-8 md:ring-[16px] ring-[#9333ea]/5 shadow-2xl` 
-                        : 'border-gray-100 bg-gray-50/50 hover:border-gray-300'
-                    }`}
-                  >
-                    <div className={`w-16 h-16 md:w-24 md:h-24 rounded-2xl md:rounded-3xl flex items-center justify-center transition-all duration-500 shadow-inner ${isActive ? 'bg-[#9333ea]/10 scale-110' : 'bg-gray-200'}`}>
-                      <CategoryIcon type={style.icon} className={`w-8 h-8 md:w-12 md:h-12 ${isActive ? 'text-[#9333ea]' : 'text-gray-400'}`} />
-                    </div>
-                    <div className="space-y-2">
-                      <h5 className={`text-xl md:text-4xl font-black ${isActive ? 'text-gray-900' : 'text-gray-700'}`}>{profile.name}</h5>
-                      <span className={`inline-block px-4 py-1 rounded-full text-xs md:text-base font-black uppercase tracking-wider ${isActive ? 'bg-[#9333ea]/10 text-[#9333ea]' : 'bg-gray-200 text-gray-500'}`}>
-                        {profile.category}
-                      </span>
-                    </div>
-                    <p className={`text-xs md:text-lg leading-relaxed line-clamp-2 px-2 font-bold ${isActive ? 'text-gray-700' : 'text-gray-500'}`}>
-                      {profile.description}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* Step 4: Controls */}
-        <section className="glass-3d p-6 md:p-24 rounded-3xl md:rounded-[60px]">
-          <h3 className="text-lg md:text-3xl font-black text-gray-800 uppercase tracking-widest text-center mb-10 md:mb-24">3. Studio Controls / غرفة التحكم</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
-            {Object.entries(STUDIO_CONTROLS).map(([key, control]) => (
-              <ControlGroup 
-                key={key} 
-                id={key} 
-                title={control.title} 
-                options={control.options} 
-                current={(voiceControls as any)[key]} 
-                onChange={(val) => setVoiceControls(v => ({ ...v, [key]: val }))} 
-              />
-            ))}
-          </div>
-        </section>
-
-        {/* Generate Button */}
-        <section className="flex justify-center pb-12 md:pb-24 px-4">
-          <button
-            onClick={handleGenerate}
-            disabled={isGenerating || (!processedText.trim() && !inputText.trim())}
-            className={`w-full max-w-4xl py-10 md:py-16 rounded-full font-black text-3xl md:text-6xl flex items-center justify-center gap-6 md:gap-12 transition-all relative overflow-hidden shadow-2xl group ${
-              isGenerating || (!processedText.trim() && !inputText.trim()) ? 'bg-gray-200 text-gray-400' : 'purple-bg text-white hover:scale-105 active:scale-95 shadow-purple-500/40'
-            }`}
-          >
-            {isGenerating ? (
-              <><div className="w-8 h-8 md:w-16 md:h-16 border-4 md:border-8 border-white/20 border-t-white rounded-full animate-spin"></div><span>PRODUCING...</span></>
-            ) : (
-              <><svg className="h-10 w-10 md:h-20 md:w-20" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg>GENERATE VOICE</>
-            )}
-          </button>
-        </section>
-
-        {/* Result Area */}
-        {currentResult && (
-          <section className="glass-3d p-6 md:p-24 rounded-3xl md:rounded-[80px] border-[#9333ea]/20 shadow-2xl animate-in zoom-in duration-700">
-            <h3 className="text-lg md:text-3xl font-black text-gray-800 uppercase tracking-widest text-center mb-10 md:mb-20">Final Master / الإخراج النهائي</h3>
-            <div className="w-full flex flex-col items-center gap-10 md:gap-20">
-              <div className="w-full max-w-6xl p-8 md:p-20 rounded-3xl md:rounded-[70px] bg-gray-50 border-2 border-gray-200 space-y-8 md:space-y-16 shadow-lg relative">
-                <div className="flex flex-col md:flex-row items-center justify-between border-b-2 border-gray-100 pb-8 md:pb-16 gap-6 md:gap-0">
-                  <div className="text-center md:text-left">
-                    <h4 className="font-black text-3xl md:text-7xl text-gray-900 mb-2 md:mb-6">{currentResult.selection.dialect}</h4>
-                    <p className="text-sm md:text-lg text-[#9333ea] font-black tracking-widest uppercase">{currentResult.selection.type} — {currentResult.selection.field}</p>
-                  </div>
-                  <div className="flex gap-4">
-                    <button className="h-20 w-20 md:h-32 md:w-32 rounded-full purple-bg text-white flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-2xl" onClick={togglePlay}>
-                      {isPlaying ? (
-                        <svg className="h-10 w-10 md:h-16 md:w-16" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-                      ) : (
-                        <svg className="h-10 w-10 md:h-16 md:w-16 translate-x-1 md:translate-x-2" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                      )}
-                    </button>
-                    {/* Download Button */}
-                    <a 
-                      href={currentResult.audioBlobUrl} 
-                      download={`nour-voice-${Date.now()}.wav`}
-                      title="Télécharger la voix off"
-                      className="h-20 w-20 md:h-32 md:w-32 rounded-full bg-gray-100 text-[#9333ea] flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl border-2 border-[#9333ea]/10"
-                    >
-                      <svg className="h-8 w-8 md:h-14 md:w-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-                <div className="flex items-center gap-4 md:gap-10">
-                  <span className="text-sm md:text-2xl text-gray-600 font-mono font-black">{formatTime(currentTime)}</span>
-                  <div className="flex-1 h-2 md:h-4 bg-gray-200 rounded-full overflow-hidden">
-                    <div className="h-full purple-bg transition-all duration-300" style={{ width: `${(currentTime / duration) * 100}%` }}></div>
-                  </div>
-                  <span className="text-sm md:text-2xl text-gray-600 font-mono font-black">{formatTime(duration)}</span>
-                </div>
+              </div>
+              <div className="space-y-4 md:space-y-8">
+                <label className="text-sm md:text-lg font-black text-[#9333ea] uppercase tracking-widest block pl-2">Master Script / المخطوطة النهائية</label>
+                <textarea
+                  className="w-full h-[250px] md:h-[500px] bg-purple-50/20 border-2 border-purple-100 rounded-3xl md:rounded-[50px] p-6 md:p-12 text-lg md:text-4xl text-gray-900 placeholder-gray-400 focus:outline-none focus:border-[#9333ea]/40 transition-all leading-relaxed resize-none shadow-sm"
+                  placeholder="Resultat optimisé..."
+                  value={processedText}
+                  onChange={(e) => setProcessedText(e.target.value)}
+                />
               </div>
             </div>
           </section>
-        )}
-      </div>
 
-      <footer className="mt-24 md:mt-64 text-center relative z-10 px-4">
-        <div className="h-1 w-40 md:w-80 bg-gray-200 mx-auto mb-8 md:mb-16 rounded-full"></div>
-        <p className="text-sm md:text-2xl text-gray-600 uppercase tracking-[0.2em] md:tracking-[1em] font-black">&copy; 2026 NOUR VOICE</p>
-      </footer>
-      <audio ref={audioRef} className="hidden" />
-    </div>
+          {/* Step 2: Language */}
+          <section className="glass-3d p-6 md:p-24 rounded-3xl md:rounded-[60px]">
+            <h3 className="text-lg md:text-3xl font-black text-gray-800 uppercase tracking-widest text-center mb-10 md:mb-20">2. Language & Accents / اللغة واللهجات</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-12">
+              {DIALECTS.map((dialect) => (
+                <button
+                  key={dialect.id}
+                  onClick={() => setSelectedDialectId(dialect.id)}
+                  className={`relative p-6 md:p-12 rounded-[30px] md:rounded-[50px] transition-all duration-500 border-2 group ${
+                    selectedDialectId === dialect.id 
+                      ? 'border-[#9333ea]/50 bg-[#9333ea]/5 shadow-xl md:scale-[1.03]' 
+                      : 'border-gray-200 bg-gray-50/50 hover:bg-gray-100 hover:border-gray-300'
+                  }`}
+                >
+                  <div className="flex flex-col md:flex-row items-center md:items-start justify-between mb-4 md:mb-8 text-center md:text-left">
+                    <h4 className={`text-xl md:text-5xl font-black leading-tight ${selectedDialectId === dialect.id ? 'text-[#9333ea]' : 'text-gray-800'}`}>
+                      {dialect.title}
+                    </h4>
+                    <div className={`h-10 w-10 md:h-14 md:w-14 rounded-full flex items-center justify-center transition-all mt-4 md:mt-0 ${selectedDialectId === dialect.id ? 'purple-bg text-white' : 'bg-gray-300 text-gray-500'}`}>
+                      <svg className="w-5 h-5 md:w-8 md:h-8" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                    </div>
+                  </div>
+                  <p className={`text-sm md:text-lg leading-relaxed font-bold text-center md:text-right ${selectedDialectId === dialect.id ? 'text-gray-700' : 'text-gray-500'}`}>
+                    {dialect.description}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Step 3: Personality */}
+          <section className="glass-3d p-6 md:p-24 rounded-3xl md:rounded-[60px] space-y-12 md:space-y-24">
+            <div className="flex flex-col items-center gap-6 md:gap-12">
+              <h3 className="text-lg md:text-3xl font-black text-gray-800 uppercase tracking-widest text-center">Voice Archetypes / البصمة الصوتية</h3>
+              <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto">
+                {['ذكر', 'أنثى'].map(gender => (
+                  <button
+                    key={gender}
+                    onClick={() => setSelectedGender(gender)}
+                    className={`px-8 md:px-24 py-4 md:py-8 rounded-full border-2 transition-all duration-500 text-lg md:text-3xl font-black shadow-lg ${
+                      selectedGender === gender 
+                        ? 'border-[#9333ea] bg-[#9333ea]/5 text-[#9333ea] md:scale-105' 
+                        : 'border-gray-200 bg-gray-50 text-gray-500 hover:bg-gray-100'
+                    }`}
+                  >
+                    {gender === 'ذكر' ? 'Homme / Male' : 'Femme / Female'}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="pt-12 md:pt-24 border-t border-gray-200">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-12">
+                {filteredProfiles.map((profile, idx) => {
+                  const style = CATEGORY_STYLES[profile.categoryKey as keyof typeof CATEGORY_STYLES];
+                  const isActive = selectedVoiceName === profile.name;
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => setSelectedVoiceName(profile.name)}
+                      className={`relative overflow-hidden p-6 md:p-12 rounded-[30px] md:rounded-[60px] border-2 transition-all duration-700 h-full flex flex-col items-center justify-center gap-4 md:gap-10 text-center ${
+                        isActive 
+                          ? `border-[#9333ea]/40 bg-white ring-8 md:ring-[16px] ring-[#9333ea]/5 shadow-2xl` 
+                          : 'border-gray-100 bg-gray-50/50 hover:border-gray-300'
+                      }`}
+                    >
+                      <div className={`w-16 h-16 md:w-24 md:h-24 rounded-2xl md:rounded-3xl flex items-center justify-center transition-all duration-500 shadow-inner ${isActive ? 'bg-[#9333ea]/10 scale-110' : 'bg-gray-200'}`}>
+                        <CategoryIcon type={style.icon} className={`w-8 h-8 md:w-12 md:h-12 ${isActive ? 'text-[#9333ea]' : 'text-gray-400'}`} />
+                      </div>
+                      <div className="space-y-2">
+                        <h5 className={`text-xl md:text-4xl font-black ${isActive ? 'text-gray-900' : 'text-gray-700'}`}>{profile.name}</h5>
+                        <span className={`inline-block px-4 py-1 rounded-full text-xs md:text-base font-black uppercase tracking-wider ${isActive ? 'bg-[#9333ea]/10 text-[#9333ea]' : 'bg-gray-200 text-gray-500'}`}>
+                          {profile.category}
+                        </span>
+                      </div>
+                      <p className={`text-xs md:text-lg leading-relaxed line-clamp-2 px-2 font-bold ${isActive ? 'text-gray-700' : 'text-gray-500'}`}>
+                        {profile.description}
+                      </p>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </section>
+
+          {/* Step 4: Controls */}
+          <section className="glass-3d p-6 md:p-24 rounded-3xl md:rounded-[60px]">
+            <h3 className="text-lg md:text-3xl font-black text-gray-800 uppercase tracking-widest text-center mb-10 md:mb-24">3. Studio Controls / غرفة التحكم</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+              {Object.entries(STUDIO_CONTROLS).map(([key, control]) => (
+                <ControlGroup 
+                  key={key} 
+                  id={key} 
+                  title={control.title} 
+                  options={control.options} 
+                  current={(voiceControls as any)[key]} 
+                  onChange={(val) => setVoiceControls(v => ({ ...v, [key]: val }))} 
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* Generate Button */}
+          <section className="flex justify-center pb-12 md:pb-24 px-4">
+            <button
+              onClick={handleGenerate}
+              disabled={isGenerating || (!processedText.trim() && !inputText.trim())}
+              className={`w-full max-w-4xl py-10 md:py-16 rounded-full font-black text-3xl md:text-6xl flex items-center justify-center gap-6 md:gap-12 transition-all relative overflow-hidden shadow-2xl group ${
+                isGenerating || (!processedText.trim() && !inputText.trim()) ? 'bg-gray-200 text-gray-400' : 'purple-bg text-white hover:scale-105 active:scale-95 shadow-purple-500/40'
+              }`}
+            >
+              {isGenerating ? (
+                <><div className="w-8 h-8 md:w-16 md:h-16 border-4 md:border-8 border-white/20 border-t-white rounded-full animate-spin"></div><span>PRODUCING...</span></>
+              ) : (
+                <><svg className="h-10 w-10 md:h-20 md:w-20" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg>GENERATE VOICE</>
+              )}
+            </button>
+          </section>
+
+          {/* Result Area */}
+          {currentResult && (
+            <section className="glass-3d p-6 md:p-24 rounded-3xl md:rounded-[80px] border-[#9333ea]/20 shadow-2xl animate-in zoom-in duration-700">
+              <h3 className="text-lg md:text-3xl font-black text-gray-800 uppercase tracking-widest text-center mb-10 md:mb-20">Final Master / الإخراج النهائي</h3>
+              <div className="w-full flex flex-col items-center gap-10 md:gap-20">
+                <div className="w-full max-w-6xl p-8 md:p-20 rounded-3xl md:rounded-[70px] bg-gray-50 border-2 border-gray-200 space-y-8 md:space-y-16 shadow-lg relative">
+                  <div className="flex flex-col md:flex-row items-center justify-between border-b-2 border-gray-100 pb-8 md:pb-16 gap-6 md:gap-0">
+                    <div className="text-center md:text-left">
+                      <h4 className="font-black text-3xl md:text-7xl text-gray-900 mb-2 md:mb-6">{currentResult.selection.dialect}</h4>
+                      <p className="text-sm md:text-lg text-[#9333ea] font-black tracking-widest uppercase">{currentResult.selection.type} — {currentResult.selection.field}</p>
+                    </div>
+                    <div className="flex gap-4">
+                      <button className="h-20 w-20 md:h-32 md:w-32 rounded-full purple-bg text-white flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-2xl" onClick={togglePlay}>
+                        {isPlaying ? (
+                          <svg className="h-10 w-10 md:h-16 md:w-16" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+                        ) : (
+                          <svg className="h-10 w-10 md:h-16 md:w-16 translate-x-1 md:translate-x-2" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                        )}
+                      </button>
+                      <a 
+                        href={currentResult.audioBlobUrl} 
+                        download={`nour-voice-${Date.now()}.wav`}
+                        title="Télécharger la voix off"
+                        className="h-20 w-20 md:h-32 md:w-32 rounded-full bg-gray-100 text-[#9333ea] flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl border-2 border-[#9333ea]/10"
+                      >
+                        <svg className="h-8 w-8 md:h-14 md:w-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-4 md:gap-10">
+                    <span className="text-sm md:text-2xl text-gray-600 font-mono font-black">{formatTime(currentTime)}</span>
+                    <div className="flex-1 h-2 md:h-4 bg-gray-200 rounded-full overflow-hidden">
+                      <div className="h-full purple-bg transition-all duration-300" style={{ width: `${(currentTime / duration) * 100}%` }}></div>
+                    </div>
+                    <span className="text-sm md:text-2xl text-gray-600 font-mono font-black">{formatTime(duration)}</span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          )}
+        </div>
+
+        <footer className="mt-24 md:mt-64 text-center relative z-10 px-4">
+          <div className="h-1 w-40 md:w-80 bg-gray-200 mx-auto mb-8 md:mb-16 rounded-full"></div>
+          <p className="text-sm md:text-2xl text-gray-600 uppercase tracking-[0.2em] md:tracking-[1em] font-black">&copy; 2026 NOUR VOICE</p>
+        </footer>
+        <audio ref={audioRef} className="hidden" />
+      </div>
+    </>
   );
 };
 
