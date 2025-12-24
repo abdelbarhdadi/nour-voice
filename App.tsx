@@ -1,57 +1,28 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { DIALECTS, VOICE_TYPES, VOICE_FIELDS, STUDIO_CONTROLS, CATEGORY_STYLES, getBaseVoiceForType, DialectInfo, VoiceProfile, VoiceField } from './constants';
+import { DIALECTS, VOICE_TYPES, getBaseVoiceForType } from './constants';
 import { GenerationHistory, VoiceControls } from './types';
 import { nourService } from './services/geminiService';
 
-// --- Cinematic Intro Component ---
+// --- Intro Ultra-Légère ---
 const CinematicIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [stage, setStage] = useState<'titles' | 'reveal' | 'fadeout'>('titles');
-  const [particles] = useState(() => 
-    [...Array(20)].map(() => ({ 
-      id: Math.random(),
-      left: Math.random() * 100,
-      top: Math.random() * 100,
-      size: Math.random() * 5 + 2,
-      duration: Math.random() * 5 + 5,
-      delay: Math.random() * 5
-    }))
-  );
 
   useEffect(() => {
-    const timer1 = setTimeout(() => setStage('reveal'), 2500);
-    const timer2 = setTimeout(() => setStage('fadeout'), 5000);
-    const timer3 = setTimeout(onComplete, 6000);
-
-    return () => {
-      clearTimeout(timer1);
-      clearTimeout(timer2);
-      clearTimeout(timer3);
-    };
+    const t1 = setTimeout(() => setStage('reveal'), 2000);
+    const t2 = setTimeout(() => setStage('fadeout'), 4000);
+    const t3 = setTimeout(onComplete, 4500);
+    return () => { clearTimeout(t1); clearTimeout(t2); clearTimeout(t3); };
   }, [onComplete]);
 
   return (
-    <div className={`fixed inset-0 z-[100] bg-white flex items-center justify-center transition-opacity duration-1000 ${stage === 'fadeout' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {particles.map(p => (
-          <div 
-            key={p.id}
-            className="particle animate-float-slow absolute"
-            style={{
-              left: `${p.left}%`,
-              top: `${p.top}%`,
-              width: `${p.size}px`,
-              height: `${p.size}px`,
-              animationDuration: `${p.duration}s`,
-              animationDelay: `${p.delay}s`,
-              willChange: 'transform'
-            }}
-          />
-        ))}
-      </div>
-      <div className="relative z-10 text-center scale-up px-4 pointer-events-none">
-        <div className={`${stage === 'titles' ? 'animate-cinematic' : 'opacity-0 transition-opacity duration-1000'}`}>
-          <h2 className="tech-logo text-5xl md:text-9xl leading-tight">NOUR VOICE</h2>
-          <div className="tech-subtitle text-lg md:text-3xl font-extrabold mt-4">PROFESSIONAL VOICE ENGINE</div>
+    <div className={`fixed inset-0 z-[100] bg-white flex items-center justify-center transition-opacity duration-700 ${stage === 'fadeout' ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
+      <div className="text-center px-4">
+        <div className={`${stage === 'titles' ? 'opacity-100' : 'opacity-0'} transition-opacity duration-1000`}>
+          <h2 className="text-4xl md:text-7xl font-black tracking-tighter text-[#9333ea]">NOUR VOICE</h2>
+          <div className="h-1 w-12 bg-[#9333ea] mx-auto mt-4"></div>
+        </div>
+        <div className={`absolute inset-0 flex items-center justify-center transition-all duration-700 ${stage === 'reveal' ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
+          <img src="https://i.postimg.cc/h4YZvfBr/unnamed-8.jpg" alt="Logo" className="h-40 w-40 rounded-full shadow-lg" />
         </div>
       </div>
     </div>
@@ -59,61 +30,31 @@ const CinematicIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) =>
 };
 
 const App: React.FC = () => {
-  const [showIntro, setShowIntro] = useState<boolean>(() => {
-    return sessionStorage.getItem('nour_voice_intro_played') !== 'true';
-  });
-
-  const [selectedDialectId, setSelectedDialectId] = useState<string>(DIALECTS[0].id);
-  const [selectedType, setSelectedType] = useState<string>(VOICE_TYPES[0]);
-  const [selectedGender, setSelectedGender] = useState<string>('ذكر');
-  const [selectedVoiceName, setSelectedVoiceName] = useState<string>('');
-  const [voiceControls, setVoiceControls] = useState<VoiceControls>({
-    temp: 'Chaleureux', emotion: 'Calme', speed: 'Normale', depth: 'متوسطة', pitch: 'متوسطة', drama: 'Légère', narration: 'Narrative'
-  });
-
+  const [showIntro, setShowIntro] = useState<boolean>(() => sessionStorage.getItem('v2_played') !== 'true');
+  const [selectedDialectId, setSelectedDialectId] = useState(DIALECTS[0].id);
+  const [selectedGender, setSelectedGender] = useState('ذكر');
+  const [selectedVoiceName, setSelectedVoiceName] = useState('');
   const [inputText, setInputText] = useState('');
-  const [processedText, setProcessedText] = useState('');
-  const [isPreprocessing, setIsPreprocessing] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [currentResult, setCurrentResult] = useState<GenerationHistory | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const selectedDialect = DIALECTS.find(d => d.id === selectedDialectId) || DIALECTS[0];
-
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
-    const updateTime = () => setCurrentTime(audio.currentTime);
-    const updateDuration = () => setDuration(audio.duration);
-    const handleEnd = () => setIsPlaying(false);
-    audio.addEventListener('timeupdate', updateTime);
-    audio.addEventListener('loadedmetadata', updateDuration);
-    audio.addEventListener('ended', handleEnd);
-    return () => {
-      audio.removeEventListener('timeupdate', updateTime);
-      audio.removeEventListener('loadedmetadata', updateDuration);
-      audio.removeEventListener('ended', handleEnd);
-    };
-  }, []);
-
   const filteredProfiles = selectedDialect.profiles.filter(p => p.gender === (selectedGender === 'ذكر' ? 'male' : 'female'));
 
   const handleGenerate = async () => {
-    const textToUse = processedText || inputText;
-    if (!textToUse.trim()) return;
+    if (!inputText.trim()) return;
     setIsGenerating(true);
     try {
       const activeVoice = filteredProfiles.find(p => p.name === selectedVoiceName) || filteredProfiles[0];
-      const baseVoice = getBaseVoiceForType(selectedType, activeVoice?.gender || 'male');
-      const audioUrl = await nourService.generateVoiceOver(textToUse, baseVoice, "Professional Voiceover");
+      const baseVoice = getBaseVoiceForType(VOICE_TYPES[0], activeVoice?.gender || 'male');
+      const audioUrl = await nourService.generateVoiceOver(inputText, baseVoice, "Professional");
       
       setCurrentResult({
-        id: Math.random().toString(36).substr(2, 9),
-        text: textToUse,
-        selection: { dialect: selectedDialect.title, type: activeVoice?.category || 'Standard', field: 'Production', controls: { ...voiceControls } },
+        id: Math.random().toString(),
+        text: inputText,
+        selection: { dialect: selectedDialect.title, type: 'Standard', field: 'Production', controls: {} as any },
         timestamp: Date.now(),
         audioBlobUrl: audioUrl
       });
@@ -126,94 +67,85 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-white overflow-hidden">
-      {showIntro && <CinematicIntro onComplete={() => setShowIntro(false)} />}
+    <div className="fixed inset-0 bg-gray-50 overflow-hidden" style={{ transform: 'translate3d(0,0,0)' }}>
+      {showIntro && <CinematicIntro onComplete={() => { setShowIntro(false); sessionStorage.setItem('v2_played', 'true'); }} />}
       
-      <div className="h-full w-full overflow-y-auto overflow-x-hidden touch-pan-y flex flex-col items-center py-12 px-4" style={{ WebkitOverflowScrolling: 'touch' }}>
-        <div className="w-full max-w-4xl mx-auto flex flex-col items-center">
+      <div className="h-full w-full overflow-y-auto overflow-x-hidden touch-pan-y" style={{ WebkitOverflowScrolling: 'touch' }}>
+        <div className="max-w-xl mx-auto px-4 py-8 flex flex-col items-center">
           
-          <header className="mb-12 text-center">
-            <img src="https://i.postimg.cc/h4YZvfBr/unnamed-8.jpg" alt="Logo" className="h-24 w-24 mx-auto rounded-full mb-6 shadow-lg" />
-            <h1 className="text-4xl md:text-6xl font-black purple-text mb-2">NOUR VOICE</h1>
-            <p className="text-gray-500 text-[10px] tracking-[0.3em] font-bold uppercase">Professional Voice Engine</p>
+          <header className="mb-8 text-center">
+            <img src="https://i.postimg.cc/h4YZvfBr/unnamed-8.jpg" alt="Logo" className="h-20 w-20 mx-auto rounded-full mb-4" />
+            <h1 className="text-3xl font-black text-gray-900">NOUR VOICE</h1>
           </header>
 
-          <div className="w-full space-y-8 pb-20">
-            {/* 1. TEXTE */}
-            <section className="glass-3d p-6 rounded-[30px] space-y-4">
-              <label className="block text-center text-xs font-black text-gray-400 uppercase tracking-widest">1. Script / النص</label>
+          <div className="w-full space-y-6 pb-12">
+            {/* INPUT SCRIPT */}
+            <div className="bg-white border border-gray-200 rounded-3xl p-5">
               <textarea 
-                className="w-full h-40 bg-gray-50/50 border-2 border-gray-100 rounded-2xl p-4 text-lg outline-none focus:border-[#9333ea]/30 transition-all resize-none"
-                placeholder="Tapez votre texte..."
+                className="w-full h-32 bg-transparent text-lg outline-none resize-none"
+                placeholder="Votre texte ici..."
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
               />
-            </section>
+            </div>
 
-            {/* 2. DIALECTES */}
-            <section className="glass-3d p-6 rounded-[30px] space-y-4">
-              <label className="block text-center text-xs font-black text-gray-400 uppercase tracking-widest">2. Dialect / اللهجة</label>
-              <div className="grid grid-cols-1 gap-3">
+            {/* DIALECTE */}
+            <div className="bg-white border border-gray-200 rounded-3xl p-5">
+              <p className="text-[10px] font-bold text-gray-400 uppercase mb-4 text-center">Dialecte / اللهجة</p>
+              <div className="grid grid-cols-1 gap-2">
                 {DIALECTS.map(d => (
-                  <button key={d.id} onClick={() => setSelectedDialectId(d.id)} className={`p-4 rounded-2xl border-2 transition-all text-right flex justify-between items-center ${selectedDialectId === d.id ? 'border-[#9333ea] bg-[#9333ea]/5' : 'border-gray-50'}`}>
-                    <span className={`h-4 w-4 rounded-full border-2 ${selectedDialectId === d.id ? 'bg-[#9333ea] border-[#9333ea]' : 'border-gray-200'}`}></span>
-                    <span className="font-bold">{d.title}</span>
+                  <button 
+                    key={d.id} 
+                    onClick={() => setSelectedDialectId(d.id)}
+                    className={`p-4 rounded-2xl border transition-all text-right flex justify-between items-center ${selectedDialectId === d.id ? 'border-[#9333ea] bg-[#9333ea]/5' : 'border-gray-100 bg-gray-50'}`}
+                  >
+                    <div className={`h-3 w-3 rounded-full ${selectedDialectId === d.id ? 'bg-[#9333ea]' : 'bg-gray-200'}`}></div>
+                    <span className="font-bold text-sm">{d.title}</span>
                   </button>
                 ))}
               </div>
-            </section>
+            </div>
 
-            {/* 3. GENRE & VOIX */}
-            <section className="glass-3d p-6 rounded-[30px] space-y-6">
-              <div className="flex justify-center p-1 bg-gray-100 rounded-full w-fit mx-auto">
+            {/* VOIX */}
+            <div className="bg-white border border-gray-200 rounded-3xl p-5">
+              <div className="flex justify-center bg-gray-100 rounded-full p-1 mb-6 w-fit mx-auto">
                 {['ذكر', 'أنثى'].map(g => (
-                  <button key={g} onClick={() => setSelectedGender(g)} className={`px-6 py-2 rounded-full text-sm font-bold transition-all ${selectedGender === g ? 'bg-white shadow-sm text-[#9333ea]' : 'text-gray-500'}`}>
+                  <button key={g} onClick={() => setSelectedGender(g)} className={`px-6 py-2 rounded-full text-xs font-bold ${selectedGender === g ? 'bg-white text-[#9333ea] shadow-sm' : 'text-gray-500'}`}>
                     {g === 'ذكر' ? 'Homme' : 'Femme'}
                   </button>
                 ))}
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-2 gap-2">
                 {filteredProfiles.map(p => (
-                  <button key={p.name} onClick={() => setSelectedVoiceName(p.name)} className={`p-4 rounded-2xl border-2 transition-all ${selectedVoiceName === p.name ? 'border-[#9333ea] bg-[#9333ea]/5' : 'border-gray-50'}`}>
-                    <span className="font-bold text-sm block">{p.name}</span>
-                    <span className="text-[9px] uppercase text-gray-400">{p.category}</span>
+                  <button key={p.name} onClick={() => setSelectedVoiceName(p.name)} className={`p-3 rounded-xl border text-center ${selectedVoiceName === p.name ? 'border-[#9333ea] bg-[#9333ea]/5' : 'border-gray-50 bg-gray-50'}`}>
+                    <span className="font-bold text-xs block truncate">{p.name}</span>
                   </button>
                 ))}
               </div>
-            </section>
+            </div>
 
-            {/* BOUTON GENERER */}
+            {/* ACTION */}
             <button 
               onClick={handleGenerate} 
               disabled={isGenerating || !inputText}
-              className={`w-full py-6 rounded-[30px] font-black text-xl shadow-xl transition-all ${isGenerating ? 'bg-gray-100 text-gray-400' : 'purple-bg text-white active:scale-95'}`}
+              className={`w-full py-5 rounded-3xl font-bold text-lg text-white shadow-lg transition-transform active:scale-95 ${isGenerating ? 'bg-gray-300' : 'bg-[#9333ea]'}`}
             >
-              {isGenerating ? 'GENERATING...' : 'GENERATE VOICE'}
+              {isGenerating ? '...' : 'GÉNÉRER'}
             </button>
 
-            {/* RESULTAT */}
+            {/* PLAYER SIMPLE */}
             {currentResult && (
-              <div className="glass-3d p-6 rounded-[30px] border-t-4 border-[#9333ea] animate-in slide-in-from-bottom duration-500">
-                <div className="flex items-center gap-4">
-                  <button onClick={() => isPlaying ? audioRef.current?.pause() : audioRef.current?.play()} className="h-14 w-14 rounded-full purple-bg text-white flex items-center justify-center shadow-lg shrink-0">
-                    {isPlaying ? <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg> : <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>}
-                  </button>
-                  <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div className="h-full purple-bg" style={{ width: `${(currentTime / duration) * 100}%` }}></div>
-                  </div>
-                  <a href={currentResult.audioBlobUrl} download className="h-10 w-10 bg-gray-50 rounded-full flex items-center justify-center text-[#9333ea] border border-gray-100">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                  </a>
-                </div>
+              <div className="bg-black text-white p-5 rounded-3xl flex items-center gap-4">
+                <button onClick={() => isPlaying ? audioRef.current?.pause() : audioRef.current?.play()} className="h-12 w-12 rounded-full bg-white text-black flex items-center justify-center shrink-0">
+                  {isPlaying ? '■' : '▶'}
+                </button>
+                <div className="flex-1 text-xs font-mono truncate">STUDIO_OUTPUT_FINAL.MP3</div>
+                <a href={currentResult.audioBlobUrl} download className="text-[#9333ea] font-bold">SAVE</a>
               </div>
             )}
           </div>
-
-          <footer className="pb-10 opacity-20 text-[9px] font-black tracking-widest uppercase">
-            &copy; 2026 NOUR VOICE ENGINE
-          </footer>
         </div>
-        <audio ref={audioRef} className="hidden" />
+        <audio ref={audioRef} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onEnded={() => setIsPlaying(false)} className="hidden" />
       </div>
     </div>
   );
