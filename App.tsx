@@ -332,7 +332,7 @@ Controls: Temp(${voiceControls.temp}), Speed(${voiceControls.speed}), Drama(${vo
         {/* Step 2: Language */}
         <section className="glass-3d p-16 md:p-24 rounded-[60px]">
           <h3 className="text-3xl font-black text-gray-800 uppercase tracking-widest text-center mb-20">2. Language & Accents / اللغة واللهجات</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="w-full max-w-full px-4 flex flex-col items-center">
             {DIALECTS.map((dialect) => (
               <button
                 key={dialect.id}
