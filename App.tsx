@@ -1,10 +1,9 @@
-
 import React, { useState, useRef, useEffect, memo } from 'react';
 import { DIALECTS, VOICE_TYPES, VOICE_FIELDS, STUDIO_CONTROLS, CATEGORY_STYLES, getBaseVoiceForType, DialectInfo, VoiceProfile, VoiceField } from './constants';
 import { GenerationHistory, VoiceControls } from './types';
 import { nourService } from './services/geminiService';
 
-// --- Cinematic Intro Component (Optimisé) ---
+// --- Cinematic Intro Component ---
 const CinematicIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) => {
   const [stage, setStage] = useState<'titles' | 'reveal' | 'fadeout'>('titles');
   
@@ -44,7 +43,7 @@ const CinematicIntro: React.FC<{ onComplete: () => void }> = ({ onComplete }) =>
   );
 };
 
-// --- Icons Statiques (Optimisés) ---
+// --- Icons Statiques ---
 const DecorationLayer = memo(() => (
   <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-[0.02]">
     <div className="absolute -top-10 -left-10 w-48 h-48 rotate-12">
@@ -270,8 +269,8 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Action */}
-        <section className="flex justify-center py-4">
+        {/* Action Section centrée avec Soutien */}
+        <section className="flex flex-col items-center py-4 space-y-6">
           <button
             onClick={handleGenerate}
             disabled={isGenerating || (!processedText.trim() && !inputText.trim())}
@@ -279,20 +278,21 @@ const App: React.FC = () => {
               isGenerating || (!processedText.trim() && !inputText.trim()) ? 'bg-gray-100 text-gray-300' : 'purple-bg text-white shadow-purple-100'
             }`}
           >
-            <p className="text-sm text-gray-500 mb-4 text-center font-arabic">
-  Ce service est gratuit, mais l'IA coûte cher. Aidez-nous à rester en ligne en nous offrant un café ! ☕
-</p>
             {isGenerating ? "... جاري الإنتاج" : "GENERATE VOICE"}
           </button>
-          <div className="mt-6 flex justify-center">
-  <a href="https://ko-fi.com/L3L01QYMQE" target="_blank" rel="noopener noreferrer">
-    <img 
-      src="https://storage.ko-fi.com/cdn/kofidonate_white.png" 
-      alt="Soutenir Nour Voice" 
-      style={{ height: '45px', border: '0px' }} 
-    />
-  </a>
-</div>
+
+          <div className="flex flex-col items-center space-y-4">
+            <p className="text-sm md:text-base text-gray-500 text-center font-arabic max-w-md px-4">
+              Ce service est gratuit grâce à vos dons. Chaque café aide à payer les serveurs d'IA ! ☕
+            </p>
+            <a href="https://ko-fi.com/L3L01QYMQE" target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform">
+              <img 
+                src="https://storage.ko-fi.com/cdn/kofidonate_white.png" 
+                alt="Soutenir Nour Voice" 
+                style={{ height: '45px', border: '0px' }} 
+              />
+            </a>
+          </div>
         </section>
 
         {/* Result */}
