@@ -269,7 +269,7 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Action Section avec bouton Ko-fi fonctionnel */}
+        {/* Action Section avec Bouton Purple Personnalisé */}
         <section className="flex flex-col items-center py-4 space-y-6">
           <button
             onClick={handleGenerate}
@@ -285,12 +285,20 @@ const App: React.FC = () => {
             <p className="text-sm md:text-base text-gray-500 text-center font-arabic max-w-md px-4">
               Ce service est gratuit grâce à vos dons. Chaque café aide à payer les serveurs d'IA ! ☕
             </p>
-            <a href="https://ko-fi.com/L3L01QYMQE" target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform active:scale-95">
+            
+            {/* BOUTON SOUTENIR NOUR VOICE PURPLE */}
+            <a 
+              href="https://ko-fi.com/L3L01QYMQE" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="flex items-center gap-3 px-8 py-4 bg-[#9333ea] hover:bg-[#7e22ce] text-white rounded-full font-black tracking-wide shadow-md transition-all hover:scale-105 active:scale-95"
+            >
               <img 
-                src="https://ko-fi.com/img/githubbutton_sm.svg" 
-                alt="Soutenir Nour Voice" 
-                style={{ height: '45px', border: '0px' }} 
+                src="https://ko-fi.com/img/cup-border.png" 
+                alt="Ko-fi" 
+                className="h-6 animate-bounce" 
               />
+              <span className="text-sm md:text-base uppercase">SOUTENIR NOUR VOICE</span>
             </a>
           </div>
         </section>
