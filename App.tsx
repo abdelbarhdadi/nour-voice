@@ -269,7 +269,7 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Action Section centrée avec Soutien */}
+        {/* Action Section avec bouton Ko-fi fonctionnel */}
         <section className="flex flex-col items-center py-4 space-y-6">
           <button
             onClick={handleGenerate}
@@ -287,7 +287,7 @@ const App: React.FC = () => {
             </p>
             <a href="https://ko-fi.com/L3L01QYMQE" target="_blank" rel="noopener noreferrer" className="hover:scale-105 transition-transform active:scale-95">
               <img 
-                src="https://storage.ko-fi.com/cdn/kofidonate_white.png" 
+                src="https://ko-fi.com/img/githubbutton_sm.svg" 
                 alt="Soutenir Nour Voice" 
                 style={{ height: '45px', border: '0px' }} 
               />
