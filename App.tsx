@@ -279,6 +279,9 @@ const App: React.FC = () => {
               isGenerating || (!processedText.trim() && !inputText.trim()) ? 'bg-gray-100 text-gray-300' : 'purple-bg text-white shadow-purple-100'
             }`}
           >
+            <p className="text-sm text-gray-500 mb-4 text-center font-arabic">
+  Ce service est gratuit, mais l'IA coûte cher. Aidez-nous à rester en ligne en nous offrant un café ! ☕
+</p>
             {isGenerating ? "... جاري الإنتاج" : "GENERATE VOICE"}
           </button>
         </section>
