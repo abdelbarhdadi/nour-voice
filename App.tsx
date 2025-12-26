@@ -269,7 +269,7 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Action Section avec Bouton Purple Personnalisé */}
+        {/* Action Section épurée avec seulement le bouton de don */}
         <section className="flex flex-col items-center py-4 space-y-6">
           <button
             onClick={handleGenerate}
@@ -281,11 +281,7 @@ const App: React.FC = () => {
             {isGenerating ? "... جاري الإنتاج" : "GENERATE VOICE"}
           </button>
 
-          <div className="flex flex-col items-center space-y-4">
-            <p className="text-sm md:text-base text-gray-500 text-center font-arabic max-w-md px-4">
-              Ce service est gratuit grâce à vos dons. Chaque café aide à payer les serveurs d'IA ! ☕
-            </p>
-            
+          <div className="flex flex-col items-center">
             {/* BOUTON SOUTENIR NOUR VOICE PURPLE */}
             <a 
               href="https://ko-fi.com/L3L01QYMQE" 
